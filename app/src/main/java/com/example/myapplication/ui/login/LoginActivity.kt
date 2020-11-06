@@ -95,7 +95,8 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
                     // Sign in success, update UI with the signed-in user's information
                     val user = auth.currentUser
                     if(user != null){
-                        presenter.handleLoginSuccess(User(user.uid,user.email,user.displayName,user.photoUrl))
+                        presenter.handleLoginSuccess(User(user.uid,
+                            user.email!!,user.displayName!!,user.photoUrl!!))
                     }else{
                         presenter.handleLoginFailure(0,"Opps! Unable to login with this account")
                     }

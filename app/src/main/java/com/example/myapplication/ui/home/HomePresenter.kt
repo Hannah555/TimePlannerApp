@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.home
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import com.example.myapplication.data.remote.FirebaseHandler
@@ -10,14 +11,12 @@ class HomePresenter(view: HomeContract.View, firebaseHandler: FirebaseHandler): 
     private var firebaseHandler: FirebaseHandler? = firebaseHandler
 
     override fun handleUserInfo(currentUser: String) {
-        val name = firebaseHandler?.getName(currentUser)
-        val photoUri = firebaseHandler?.getPhotoUri(currentUser)
-//        if (name != null && photoUri != null) {
-//            view?.userInfo(name, photoUri)
-//        }
+        firebaseHandler?.getName(object: FirebaseHandler.FirebaseTunnel{
+            override fun onDataFetched(name: String, photo: Uri) {
+                view?.userInfo(name, photo)
+            }
+        }, currentUser)
 
-        Log.i("home_name", name.toString())
-        Log.i("home_photoUri", photoUri.toString())
     }
 
     override fun onStart(extras: Bundle?) {
@@ -28,5 +27,8 @@ class HomePresenter(view: HomeContract.View, firebaseHandler: FirebaseHandler): 
         this.view = null
     }
 
-
+    override fun passName(name: String, photo: Uri) {
+        Log.i("This real name",name)
+        Log.i("This is photo",photo.toString())
+    }
 }
