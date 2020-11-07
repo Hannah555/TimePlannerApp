@@ -4,8 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
+import com.example.myapplication.data.model.Item
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -19,14 +23,18 @@ private const val ARG_PARAM2 = "param2"
  */
 class ChecklistFragment : Fragment() {
 
-    var monthsArray = arrayOf("Jan", "Feb", "March", "Apr")
+    protected lateinit var rootview: View
+    lateinit var recyclerView: RecyclerView
     lateinit var adapter: RecyclerViewAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        onCreateComponent()
+    }
 
-        adapter = RecyclerViewAdapter(monthsArray)
-
+    private fun onCreateComponent() {
+        adapter = RecyclerViewAdapter()
     }
 
     override fun onCreateView(
@@ -34,7 +42,55 @@ class ChecklistFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_checklist, container, false)
+        rootview = inflater.inflate(R.layout.fragment_checklist, container, false)
+        initView()
+        return rootview
     }
+
+    private fun initView() {
+        setUpAdapter()
+        initializerRecyclerView()
+        setDummyData()
+    }
+
+    private fun setDummyData() {
+        var list: ArrayList<Item> = ArrayList()
+        list.add(Item("Item 1", true))
+        list.add(Item("Item 2", false))
+        adapter.addItems(list)
+    }
+
+    private fun initializerRecyclerView() {
+        recyclerView = rootview.findViewById(R.id.recyclerview)
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.adapter = adapter
+    }
+
+    private fun setUpAdapter() {
+        adapter.setOnItemClickListener(onItemClickListener = object : OnItemClickListener{
+            override fun onItemClick(position: Int, view: View?) {
+                var item = adapter.getItem(position)
+                Toast.makeText(context, "Success" + item, Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onChecklistClick(position: Int, view: View?) {
+                Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    companion object {
+        var TAG = ChecklistFragment::class.java.simpleName
+        const val ARG_POSITION: String = "positioin"
+
+        fun newInstance(): ChecklistFragment {
+            var fragment = ChecklistFragment();
+            val args = Bundle()
+            args.putInt(ARG_POSITION, 1)
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
 
 }
