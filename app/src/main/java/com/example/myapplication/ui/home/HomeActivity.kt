@@ -7,10 +7,11 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
+import android.widget.ImageView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentTransaction
@@ -19,6 +20,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.myapplication.R
 import com.example.myapplication.data.remote.FirebaseHandlerImpl
 import com.example.myapplication.ui.checklist.ChecklistFragment
+import com.example.myapplication.ui.checklist.ListActivity
 import com.example.myapplication.ui.login.LoginActivity
 import com.example.myapplication.ui.schedule.ScheduleFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -26,6 +28,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.header_nav_main.view.*
 
@@ -39,6 +43,7 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
     lateinit var logout: Button
     lateinit var checklistFragment: ChecklistFragment
     lateinit var scheduleFragment: ScheduleFragment
+    lateinit var homeFragment: HomeFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,9 +68,11 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
         val navigationView: NavigationView = findViewById(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
 
-        // Implement the default fragment to checklist fragment
-        checklistFragment = ChecklistFragment()
-        supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, checklistFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit()
+        // Implement the default fragment to home fragment
+        homeFragment = HomeFragment()
+        supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, homeFragment).setTransition(
+            FragmentTransaction.TRANSIT_FRAGMENT_OPEN
+        ).commit()
 
 
         // Set presenter
@@ -83,8 +90,49 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
             presenter.handleUserInfo(user.uid)
         }
 
-    }
+        // Floating button
+        val itemBuilder:SubActionButton.Builder = SubActionButton.Builder(this)
+        val addListItemIcon:ImageView = ImageView(this)
+        addListItemIcon.setImageDrawable(
+            ContextCompat.getDrawable(
+                applicationContext, // Context
+                R.drawable.ic_baseline_add_24 // Drawable
+            )
+        )
+        val homeItemIcon:ImageView = ImageView(this)
+        homeItemIcon.setImageDrawable(
+            ContextCompat.getDrawable(
+                applicationContext, // Context
+                R.drawable.ic_baseline_home_24 // Drawable
+            )
+        )
+        val projectIcon:ImageView = ImageView(this)
+        projectIcon.setImageDrawable(
+            ContextCompat.getDrawable(
+                applicationContext, // Context
+                R.drawable.ic_baseline_next_week_24 // Drawable
+            )
+        )
 
+        val addListButton = itemBuilder.setContentView(addListItemIcon).build();
+        val homeButton = itemBuilder.setContentView(homeItemIcon).build()
+        val projectButton = itemBuilder.setContentView(projectIcon).build()
+
+        val actionView = findViewById<View>(R.id.floatingmenu)
+
+        val actionMenu = FloatingActionMenu.Builder(this)
+            .addSubActionView(addListButton)
+            .addSubActionView(projectButton)
+            .addSubActionView(homeButton)
+            .attachTo(actionView)
+            .build()
+
+        addListButton.setOnClickListener {
+            val intent = Intent(this@HomeActivity, ListActivity::class.java)
+            startActivityForResult(intent, 2)
+        }
+
+    }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
@@ -133,13 +181,21 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
         when(item.itemId){
             R.id.nav_item_one -> {
                 checklistFragment = ChecklistFragment()
-                supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, checklistFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit()
+                supportFragmentManager.beginTransaction().replace(
+                    R.id.nav_host_fragment,
+                    checklistFragment
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit()
             }
             R.id.nav_item_two -> {
                 scheduleFragment = ScheduleFragment()
-                supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, scheduleFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit()
+                supportFragmentManager.beginTransaction().replace(
+                    R.id.nav_host_fragment,
+                    scheduleFragment
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit()
             }
-            R.id.nav_item_three -> Toast.makeText(this, "Clicked Item 3", Toast.LENGTH_SHORT).show()
+            R.id.nav_item_three -> {
+
+            }
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true

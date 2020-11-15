@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:openDrawer="start"
     tools:context=".ui.home.HomeActivity">
 
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:openDrawer="start">
 
         <include
             android:id="@+id/include"
@@ -16,17 +23,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            app:headerLayout="@layout/header_nav_main"
-            app:menu="@menu/home_main_drawer"
             android:fitsSystemWindows="true"
+            app:headerLayout="@layout/header_nav_main"
             app:layout_editor_absoluteX="8dp"
             app:layout_editor_absoluteY="8dp"
+            app:menu="@menu/home_main_drawer"
             tools:ignore="MissingConstraints">
 
             <Button
@@ -34,10 +40,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                app:layout_constraintTop_toBottomOf="@+id/nav_view"
                 android:layout_margin="50dp"
-                android:text="Logout"/>
+                android:text="Logout"
+                app:layout_constraintTop_toBottomOf="@+id/nav_view" />
 
         </com.google.android.material.navigation.NavigationView>
 
-</androidx.drawerlayout.widget.DrawerLayout>
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingmenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_baseline_add_24"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
