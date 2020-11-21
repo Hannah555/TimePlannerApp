@@ -7,11 +7,11 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
-import com.example.myapplication.data.model.Item
+import com.example.myapplication.data.model.Task
 import com.example.myapplication.ui.BaseRecyclerViewAdapter
 import kotlinx.android.synthetic.main.row_layout.view.*
 
-class RecyclerViewAdapter: BaseRecyclerViewAdapter<Item>() {
+class RecyclerViewAdapter: BaseRecyclerViewAdapter<Task>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return MyViewHolder(
             LayoutInflater.from(parent?.context).inflate(
@@ -45,8 +45,8 @@ class RecyclerViewAdapter: BaseRecyclerViewAdapter<Item>() {
             itemClickListener?.onItemClick(adapterPosition, v)
         }
 
-        fun setUpView(item: Item?) {
-            textView.text = item?.item
+        fun setUpView(item: Task?) {
+            textView.text = item?.task
         }
 
     }

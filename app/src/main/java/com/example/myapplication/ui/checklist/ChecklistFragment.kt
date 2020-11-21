@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
-import com.example.myapplication.data.model.Item
 
 
 /**
@@ -46,14 +45,14 @@ class ChecklistFragment : Fragment() {
     private fun initView() {
         setUpAdapter()
         initializerRecyclerView()
-        setDummyData()
+//        setDummyData()
     }
 
     private fun setDummyData() {
-        var list: ArrayList<Item> = ArrayList()
-        list.add(Item("Item 1", true))
-        list.add(Item("Item 2", false))
-        adapter.addItems(list)
+//        var list: ArrayList<Task> = ArrayList()
+//        list.add(Task("Item 1", true,))
+//        list.add(Task("Item 2", false))
+//        adapter.addItems(list)
     }
 
     private fun initializerRecyclerView() {

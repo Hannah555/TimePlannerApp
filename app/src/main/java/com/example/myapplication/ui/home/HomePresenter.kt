@@ -16,7 +16,6 @@ class HomePresenter(view: HomeContract.View, firebaseHandler: FirebaseHandler): 
                 view?.userInfo(name, photo)
             }
         }, currentUser)
-
     }
 
     override fun onStart(extras: Bundle?) {

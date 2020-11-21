@@ -52,8 +52,8 @@ class FirebaseHandlerImpl: FirebaseHandler {
             if (document.data != null){
                 var name = document.getString("Name")!!
                 var photo = document.getString("PhotoUri")
-                Log.i("This is the real real name", name)
-                Log.i("This is the real photo", photo)
+//                Log.i("This is the real real name", name)
+//                Log.i("This is the real photo", photo)
                 tunnel.onDataFetched(name, Uri.parse(photo))
                // presenter.passName(name, Uri.parse(photo))
             }else{
