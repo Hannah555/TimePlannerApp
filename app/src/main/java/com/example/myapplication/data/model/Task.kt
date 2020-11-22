@@ -1,18 +1,42 @@
 package com.example.myapplication.data.model
 
-import java.sql.Time
-import java.util.*
-
 class Task{
     var task: String? = null
     var done: Boolean = false
-    var dueDate: Date? = null
-    var dueTime: Time? = null
+    var date: String? = null
+    var repeat: Boolean = false
+    var startTime: String? = null
+    var endTime: String? = null
 
-    constructor(task: String?, done: Boolean, dueDate: Date?, dueTime: Time?) {
+    constructor(
+        task: String?,
+        done: Boolean,
+        date: String?,
+        repeat: Boolean,
+        startTime: String?,
+        endTime: String?
+    ) {
         this.task = task
         this.done = done
-        this.dueDate = dueDate
-        this.dueTime = dueTime
+        this.date = date
+        this.repeat = repeat
+        this.startTime = startTime
+        this.endTime = endTime
     }
+
+    constructor(task: String?,
+                date: String?,
+                repeat: Boolean,
+                startTime: String?,
+                endTime: String?){
+        this.task = task
+        this.date = date
+        this.repeat = repeat
+        this.startTime = startTime
+        this.endTime = endTime
+    }
+
+    constructor()
+
+
 }

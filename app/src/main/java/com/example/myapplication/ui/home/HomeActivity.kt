@@ -19,7 +19,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.myapplication.R
 import com.example.myapplication.data.remote.FirebaseHandlerImpl
-import com.example.myapplication.ui.addList.AddListContract
 import com.example.myapplication.ui.addList.AddListDialog
 import com.example.myapplication.ui.checklist.ChecklistFragment
 import com.example.myapplication.ui.login.LoginActivity
