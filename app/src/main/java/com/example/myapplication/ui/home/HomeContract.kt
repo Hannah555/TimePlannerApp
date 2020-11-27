@@ -14,5 +14,6 @@ interface HomeContract {
     interface Presenter: BasePresenter{
         fun handleUserInfo(currentUser: String)
         fun passName(name: String, photoUri: Uri)
+//        fun getDate(date:String)
     }
 }

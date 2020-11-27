@@ -13,6 +13,7 @@ class FirebaseHandlerImpl: FirebaseHandler {
 
     private val db = Firebase.firestore
 
+
     override fun saveUserData(user: User) {
         val docRef = db.collection(user.uid.toString()).document("profile")
         //Log.i("user",user.uid.toString())
@@ -87,6 +88,7 @@ class FirebaseHandlerImpl: FirebaseHandler {
 
  */
     }
+
 
 
 }

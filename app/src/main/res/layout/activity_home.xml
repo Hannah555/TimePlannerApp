@@ -57,6 +57,6 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/ic_baseline_add_24"/>
+        android:src="@drawable/ic_baseline_more_horiz_24"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

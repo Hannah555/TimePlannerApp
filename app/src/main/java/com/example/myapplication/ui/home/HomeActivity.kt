@@ -21,6 +21,7 @@ import com.example.myapplication.R
 import com.example.myapplication.data.remote.FirebaseHandlerImpl
 import com.example.myapplication.ui.addList.AddListDialog
 import com.example.myapplication.ui.checklist.ChecklistFragment
+import com.example.myapplication.ui.history.HistoryActivity
 import com.example.myapplication.ui.login.LoginActivity
 import com.example.myapplication.ui.schedule.ScheduleFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -131,6 +132,16 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
             openAddListDialog()
         }
 
+        homeButton.setOnClickListener {
+            toHomePage()
+        }
+
+    }
+
+    private fun toHomePage() {
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun openAddListDialog() {
@@ -184,21 +195,17 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.nav_item_one -> {
-                checklistFragment = ChecklistFragment()
+                homeFragment = HomeFragment()
                 supportFragmentManager.beginTransaction().replace(
                     R.id.nav_host_fragment,
-                    checklistFragment
+                    homeFragment
                 ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit()
             }
             R.id.nav_item_two -> {
-                scheduleFragment = ScheduleFragment()
-                supportFragmentManager.beginTransaction().replace(
-                    R.id.nav_host_fragment,
-                    scheduleFragment
-                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit()
-            }
-            R.id.nav_item_three -> {
-
+                val intent = Intent(this, HistoryActivity::class.java)
+                //intent.putExtra("key Identifier", value)
+                startActivity(intent)
+                finish()
             }
         }
         drawer_layout.closeDrawer(GravityCompat.START)

@@ -30,4 +30,5 @@ class HomePresenter(view: HomeContract.View, firebaseHandler: FirebaseHandler): 
         Log.i("This real name",name)
         Log.i("This is photo",photo.toString())
     }
+
 }

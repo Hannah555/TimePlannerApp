@@ -16,4 +16,7 @@ interface FirebaseHandler {
         fun onDataFetched(name: String, photo: Uri)
     }
 
+//    interface DateRetriever{
+//        fun onDateFetched(query: Query)
+//    }
 }

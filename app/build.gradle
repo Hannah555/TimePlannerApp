@@ -50,6 +50,8 @@ dependencies {
 //    Firestore dependency
     implementation 'com.google.firebase:firebase-firestore-ktx:22.0.0'
 
+    implementation "com.firebaseui:firebase-ui-firestore:6.1.0"
+
 //    Navigation Component
     implementation "androidx.navigation:navigation-fragment-ktx:2.3.1"
     implementation "androidx.navigation:navigation-ui-ktx:2.3.1"
@@ -77,14 +79,19 @@ dependencies {
 //    Range time picker
     implementation "com.github.zion830:RangeTimePickerDialog:1.2"
 
+//    Time table
+    implementation 'com.github.tlaabs:TimetableView:1.0.3-fx1'
+
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.1'
     implementation 'androidx.navigation:navigation-fragment:2.3.1'
     implementation 'androidx.navigation:navigation-ui:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    implementation 'androidx.wear:wear:1.0.0'
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    compileOnly 'com.google.android.wearable:wearable:2.6.0'
 
 }

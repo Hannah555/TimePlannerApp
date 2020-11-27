@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.home.HomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -21,7 +22,9 @@
                 android:id="@+id/tablayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#1db995">
+                android:background="@color/colorPrimary"
+                app:tabTextColor="#e0e0e0"
+                app:tabSelectedTextColor="@color/colorAccent">
             </com.google.android.material.tabs.TabLayout>
 
         <androidx.viewpager.widget.ViewPager

@@ -1,14 +1,24 @@
 package com.example.myapplication.ui.checklist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
+import com.example.myapplication.data.model.Task
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import kotlinx.android.synthetic.main.row_layout.*
+import kotlinx.android.synthetic.main.row_layout.view.*
 
 
 /**
@@ -16,21 +26,20 @@ import com.example.myapplication.R
  * Use the [ChecklistFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ChecklistFragment : Fragment() {
+class ChecklistFragment(date: String) : Fragment() {
 
     protected lateinit var rootview: View
     lateinit var recyclerView: RecyclerView
-    lateinit var adapter: RecyclerViewAdapter
-
+    lateinit var mdatabase: FirebaseFirestore
+    private var adapter: RecyclerViewAdapter? = null
+    private lateinit var tquery:Query
+    private var thisdate = date
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        onCreateComponent()
+        Log.i("SEQUENCE", "ON CREATE")
     }
 
-    private fun onCreateComponent() {
-        adapter = RecyclerViewAdapter()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,54 +47,67 @@ class ChecklistFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         rootview = inflater.inflate(R.layout.fragment_checklist, container, false)
+
         initView()
         return rootview
     }
 
-    private fun initView() {
-        setUpAdapter()
-        initializerRecyclerView()
-//        setDummyData()
-    }
-
-    private fun setDummyData() {
-//        var list: ArrayList<Task> = ArrayList()
-//        list.add(Task("Item 1", true,))
-//        list.add(Task("Item 2", false))
-//        adapter.addItems(list)
-    }
-
     private fun initializerRecyclerView() {
+        Log.i("date in recyclerview", thisdate)
         recyclerView = rootview.findViewById(R.id.recyclerview)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        mdatabase = FirebaseFirestore.getInstance()
+        tquery = mdatabase.collection(FirebaseAuth.getInstance().currentUser!!.uid).document("profile").collection("task")
+            .whereEqualTo("startTime", null)
+            .whereEqualTo("date", thisdate)
+        val options= FirestoreRecyclerOptions.Builder<Task>()
+            .setQuery(tquery, Task::class.java)
+            .build()
+        adapter = RecyclerViewAdapter(options)
         recyclerView.adapter = adapter
-    }
 
-    private fun setUpAdapter() {
-        adapter.setOnItemClickListener(onItemClickListener = object : OnItemClickListener{
-            override fun onItemClick(position: Int, view: View?) {
-                var item = adapter.getItem(position)
-                Toast.makeText(context, "Success" + item, Toast.LENGTH_SHORT).show()
+        val mIth = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT.or(ItemTouchHelper.RIGHT)){
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                TODO("Not yet implemented")
             }
 
-            override fun onChecklistClick(position: Int, view: View?) {
-                Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show()
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                adapter?.deleteItem(viewHolder.adapterPosition)
+                Toast.makeText(requireActivity(), "Task deleted", Toast.LENGTH_SHORT).show()
+            }
+
+        }).attachToRecyclerView(recyclerView)
+
+        adapter?.setOnItemClickListener(object: OnItemClickListener{
+            override fun onItemClick(documentSnapshot: DocumentSnapshot, position: Int, isDone:Boolean) {
+                val taskid: String = documentSnapshot.id
+                Log.i("------", "------------------")
+                Log.i("Position", position.toString())
+                Log.i("Path", documentSnapshot.reference.path)
+                Log.i("Snapshot done", documentSnapshot.get("done").toString())
+                Log.i("isDone", isDone.toString())
+                documentSnapshot.reference.update("done", !isDone)
             }
         })
+        adapter!!.startListening()
     }
 
-    companion object {
-        var TAG = ChecklistFragment::class.java.simpleName
-        const val ARG_POSITION: String = "positioin"
-
-        fun newInstance(): ChecklistFragment {
-            var fragment = ChecklistFragment();
-            val args = Bundle()
-            args.putInt(ARG_POSITION, 1)
-            fragment.arguments = args
-            return fragment
-        }
+    override fun onStart() {
+        super.onStart()
+        adapter!!.startListening()
     }
 
+    override fun onStop() {
+        super.onStop()
+        adapter!!.stopListening()
+    }
+
+    fun initView() {
+        initializerRecyclerView()
+    }
 
 }

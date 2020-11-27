@@ -17,6 +17,8 @@ import androidx.fragment.app.DialogFragment
 import com.example.myapplication.R
 import com.example.myapplication.data.model.Task
 import com.example.myapplication.data.remote.FirebaseHandlerImpl
+import org.json.JSONArray
+import org.json.JSONObject
 import zion830.com.range_picker_dialog.TimeRangePickerDialog
 import java.text.SimpleDateFormat
 import java.util.*
@@ -31,7 +33,9 @@ class AddListDialog : DialogFragment(), AddListContract.View{
     private var startTime: String? = null
     private var endTime: String? = null
     private var repeat: Boolean = false
-
+    private lateinit var showDate: TextView
+    private lateinit var showTime: TextView
+    private lateinit var editActivity: EditText
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -46,6 +50,7 @@ class AddListDialog : DialogFragment(), AddListContract.View{
         val btn_rec = dialogView.findViewById(R.id.btn_rec) as ImageButton
         val btn_cancle = dialogView.findViewById(R.id.btn_cancle) as ImageButton
         val btn_confirm = dialogView.findViewById(R.id.btn_confirm) as ImageButton
+        editActivity = dialogView.findViewById<EditText>(R.id.addActivity)
 
         val weekSelection = dialogView.findViewById(R.id.weekSelection) as Spinner
         weekSelection.visibility = View.GONE
@@ -56,13 +61,13 @@ class AddListDialog : DialogFragment(), AddListContract.View{
         date_selection.visibility = View.GONE
 
         val selectDateButton = dialogView.findViewById<ImageButton>(R.id.selectdatebutton)
-        val showDate = dialogView.findViewById<TextView>(R.id.showdate)
+        showDate = dialogView.findViewById<TextView>(R.id.showdate)
 
         val time_selection = dialogView.findViewById<LinearLayout>(R.id.time_selection)
         time_selection.visibility = View.GONE
 
         val selectTimeButton = dialogView.findViewById<ImageButton>(R.id.selecttimebutton)
-        val showTime = dialogView.findViewById<TextView>(R.id.showtime)
+        showTime = dialogView.findViewById<TextView>(R.id.showtime)
 
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
@@ -213,9 +218,9 @@ class AddListDialog : DialogFragment(), AddListContract.View{
         }
 
         btn_confirm.setOnClickListener {
-            val editActivity = dialogView.findViewById<EditText>(R.id.addActivity)
             task = editActivity.text.toString()
             presenter.handleActivitySuccess(Task(task, date, repeat, startTime, endTime))
+            dismiss()
         }
 
         builder.setView(dialogView).setTitle("Add New Activity")
@@ -253,27 +258,65 @@ class AddListDialog : DialogFragment(), AddListContract.View{
     override fun getJsonData(jsonData: String) {
         Toast.makeText(requireActivity(), jsonData, Toast.LENGTH_SHORT).show()
         Log.i("json", jsonData)
-//        val json = JSONObject(jsonData)
-//        val event = json.getString("events")
-//
-//        val jsonArray = JSONArray(event)
-//        var i = 0
-//        while (i < jsonArray.length()){
-//            val jsonObject = jsonArray.getJSONObject(i)
-//            val startObject = jsonObject.getString("start")
-//
-//            val jsonSecond = JSONObject(startObject)
-//            val fragmentObject = jsonSecond.getString("fragment")
-//
-//            val jsonThird = JSONObject(fragmentObject)
-//            val weekday = jsonThird.getString("weekday")
-//        }
+        var weekday:String? = null
+        var year: String? = null
+        var month: String? = null
+        var day: String? = null
+        var hour: String? = null
+        var minute: String? = null
+
+        val json = JSONObject(jsonData)
+        val event = json.getString("events")
+        val body = json.getString("body")
+
+        val jsonArray = JSONArray(event)
+        var i = 0
+        var length = jsonArray.length()
+        while (i < length){
+            val jsonObject = jsonArray.getJSONObject(i)
+            val startObject = jsonObject.getString("start")
+
+            val jsonSecond = JSONObject(startObject)
+            val fragmentObject = jsonSecond.getString("fragments")
+
+            val jsonThird = JSONObject(fragmentObject)
+            weekday = jsonThird.getString("weekday")
+            year = jsonThird.getString("year")
+            month = jsonThird.getString("month")
+            day = jsonThird.getString("day")
+            hour = jsonThird.getString("hour")
+            minute = jsonThird.getString("minute")
+
+            length--
+        }
+
+
+        val date = day +"/" + month + "/" + year
+        val inTimeString = hour + ":" + minute
+
+        val inTimeFormat = SimpleDateFormat("hh:mm")
+
+        val parseTime = inTimeFormat.parse(inTimeString)
+
+        val OutTimeFormat = SimpleDateFormat("a hh:mm")
+
+        val startTime = OutTimeFormat.format(parseTime)
+
+        val addCal = Calendar.getInstance()
+        addCal.time = parseTime
+        addCal.add(Calendar.HOUR, 1)
+
+        val endTime = OutTimeFormat.format(addCal.time)
+
+        val resultTime = startTime + " - " + endTime
+
+        Log.i("TIme!!!!!!!!", resultTime)
+        showTime.text = resultTime
+        showDate.text = date
+        editActivity.setText(body)
     }
 
     override fun setPresenter(presenter: AddListContract.Presenter) {
         this.presenter = presenter
     }
-
-
-
 }

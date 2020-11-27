@@ -1,9 +1,8 @@
 package com.example.myapplication.ui.checklist
 
-import android.view.View
+import com.google.firebase.firestore.DocumentSnapshot
 
 interface OnItemClickListener {
-    abstract fun onItemClick(position:Int, view: View?)
+    abstract fun onItemClick(documentSnapshot: DocumentSnapshot, position:Int, isDone: Boolean)
 
-    abstract fun onChecklistClick(position: Int, view: View?)
 }

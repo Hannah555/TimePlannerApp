@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.example.myapplication.ui.schedule.ScheduleFragment
 @Suppress("DEPRECATION")
-class PageAdapter(fm: FragmentManager, val behavior: Int) : FragmentStatePagerAdapter(fm) {
+class PageAdapter(fm: FragmentManager, val behavior: Int, val date: String) : FragmentStatePagerAdapter(fm) {
 
 
     override fun getCount(): Int = behavior
@@ -13,7 +13,7 @@ class PageAdapter(fm: FragmentManager, val behavior: Int) : FragmentStatePagerAd
     override fun getItem(position: Int): Fragment {
         return when (position){
             0 -> {
-                ChecklistFragment()
+                ChecklistFragment(date)
             }
             1 -> {
                 ScheduleFragment()
