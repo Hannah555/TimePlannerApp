@@ -16,7 +16,7 @@ class PageAdapter(fm: FragmentManager, val behavior: Int, val date: String) : Fr
                 ChecklistFragment(date)
             }
             1 -> {
-                ScheduleFragment()
+                ScheduleFragment(date)
             }
             else -> getItem(position)
         }

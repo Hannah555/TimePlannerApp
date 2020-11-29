@@ -89,6 +89,36 @@ class FirebaseHandlerImpl: FirebaseHandler {
  */
     }
 
+    override fun getScheduleTask(retriever: FirebaseHandler.ScheduleRetriever, date: String) {
+        val query = db.collection(FirebaseAuth.getInstance().currentUser!!.uid).document("profile").collection("task")
+            .whereNotEqualTo("startTime", null)
+
+        query.get().addOnCompleteListener { task->
+            if(task.isSuccessful){
+//                val result = task.result
+                retriever.onDateFetched(task.result, date)
+
+
+
+//                    if (result != null) {
+//                        for (document in result) {
+//                            val currentDocument = document.toObject(Task::class.java)
+//                            Log.i("task info", currentDocument.task.toString())
+//                            Log.i("date info", currentDocument.date.toString())
+//                            Log.i("repeat info", currentDocument.repeat.toString())
+//                            Log.i("done info", currentDocument.done.toString())
+//                            Log.i("startTime info", currentDocument.startTime.toString())
+//                            Log.i("endTime info", currentDocument.endTime.toString())
+//                            if(currentDocument.date == date){
+//                                retriever.onDateFetched(currentDocument)
+//
+//                            }
+//                        }
+//                    }
+
+            }
+        }
+    }
 
 
 }

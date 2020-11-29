@@ -190,7 +190,11 @@ class AddListDialog : DialogFragment(), AddListContract.View{
                     TimeRangePickerDialog.Builder()
                         .setOnTimeRangeSelectedListener { timeRange ->
                             val time = timeRange.readableTimeRange
-                            showTime.text = time
+                            showTime.text = time.toLowerCase()
+                            val splitTime = time.toLowerCase().split(" - ")
+
+                            startTime = splitTime[0]
+                            endTime = splitTime[1]
                         }
                         .setOnDayMode(true)
                         .build()
