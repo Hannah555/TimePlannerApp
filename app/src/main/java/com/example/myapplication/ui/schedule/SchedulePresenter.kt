@@ -18,6 +18,7 @@ class SchedulePresenter(view: ScheduleContract.View, firebaseHandler: FirebaseHa
 
     override fun scheduleHandler(date: String): ArrayList<Schedule>? {
         var list: ArrayList<Schedule>? = null
+        list?.clear()
         Log.i("schedule presenter date", date)
         Log.i("SEQUENCE", "3")
         firebaseHandler.getScheduleTask(object : FirebaseHandler.ScheduleRetriever{
@@ -41,7 +42,7 @@ class SchedulePresenter(view: ScheduleContract.View, firebaseHandler: FirebaseHa
                             val endPart = endTime?.split(" ", ":")
 
                             // For start hour
-                            if(startPart?.get(0) == "am"){
+                            if(startPart?.get(0) == "pm"){
                                 startHour = startPart.get(1).toInt() + 12
                                 if(startHour!! == 24){
                                     startHour = 0
@@ -53,7 +54,7 @@ class SchedulePresenter(view: ScheduleContract.View, firebaseHandler: FirebaseHa
                             startMinute = startPart?.get(2)?.toInt()
 
                             // For end hour
-                            if(endPart?.get(0) == "am"){
+                            if(endPart?.get(0) == "pm"){
                                 endHour = endPart.get(1).toInt() + 12
                                 if(endHour!! == 24){
                                     endHour = 0
@@ -65,13 +66,14 @@ class SchedulePresenter(view: ScheduleContract.View, firebaseHandler: FirebaseHa
                             endMinute = endPart?.get(2)?.toInt()
 
                             list = view.showSchedule(title, startHour, startMinute, endHour, endMinute)
+                            Log.i("firebase sch", list.toString())
                         }
                     }
+
                     view.getSchedule(list)
                 }
             }
         }, date)
-        Log.i("schedule in presenter", list.toString())
         return list
     }
 

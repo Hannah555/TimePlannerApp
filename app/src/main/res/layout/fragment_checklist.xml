@@ -3,16 +3,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.checklist.ChecklistFragment"
-    android:padding="20dp">
+    tools:context=".ui.checklist.ChecklistFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        android:id="@+id/recyclerview">
+        android:orientation="vertical">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <Button
+            android:id="@+id/to_schedule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Schedule"
+            android:layout_gravity="right"
+            android:layout_margin="20dp"
+            android:background="@drawable/circle_shape"/>
+
+        <include
+            android:id="@+id/include"
+            layout="@layout/datepicker_nav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            android:id="@+id/recyclerview">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+
+    </LinearLayout>
+
 
 </FrameLayout>
