@@ -80,7 +80,10 @@ dependencies {
     implementation "com.github.zion830:RangeTimePickerDialog:1.2"
 
 //    Time table
-    implementation 'com.github.tlaabs:TimetableView:1.0.3-fx1'
+//    implementation 'com.github.tlaabs:TimetableView:1.0.3-fx1'
+
+//    Timeline view
+    implementation 'pl.hypeapp:materialtimelineview:1.1'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.1'
@@ -92,5 +95,5 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-
+    implementation project(':timetableview')
 }

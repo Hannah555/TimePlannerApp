@@ -8,10 +8,11 @@ interface ScheduleContract {
 
     interface View: BaseView<Presenter>{
         fun showSchedule(title: String?, startHour: Int?, startMinute: Int?, endHour: Int?, endMinute: Int?): ArrayList<Schedule>
-        fun getSchedule(schedule: ArrayList<Schedule>?)
+        fun getSchedule(schedule: ArrayList<Schedule>?, documentID: ArrayList<String>?)
     }
 
     interface Presenter: BasePresenter{
         fun scheduleHandler(date: String): ArrayList<Schedule>?
+        fun passDocumentID(docID: String)
     }
 }

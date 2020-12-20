@@ -13,10 +13,10 @@ class PageAdapter(fm: FragmentManager, val behavior: Int, val date: String) : Fr
     override fun getItem(position: Int): Fragment {
         return when (position){
             0 -> {
-                ChecklistFragment(date)
+                ChecklistFragment()
             }
             1 -> {
-                ScheduleFragment(date)
+                ScheduleFragment()
             }
             else -> getItem(position)
         }

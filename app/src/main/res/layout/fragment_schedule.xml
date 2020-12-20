@@ -6,21 +6,31 @@
     android:layout_height="match_parent"
     tools:context=".ui.schedule.ScheduleFragment">
 
-        <!-- TODO: Update blank fragment layout -->
-
-
-    <com.github.tlaabs.timetableview.TimetableView
-        android:id="@+id/timetableview"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        app:column_count="2"
-        app:row_count="25"
-        app:start_time="0"
-        app:header_title="@array/week_header_title"
-        app:side_cell_width="30dp"
-        android:gravity="center"
-        />
+        android:orientation="vertical">
 
+
+        <include
+            android:id="@+id/include"
+            layout="@layout/datepicker_nav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.github.tlaabs.timetableview.TimetableView
+            android:id="@+id/timetableview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:column_count="2"
+            app:row_count="25"
+            app:start_time="0"
+            app:header_title="@array/week_header_title"
+            app:side_cell_width="30dp"
+            android:gravity="center"
+            />
+
+    </LinearLayout>
 
 </FrameLayout>

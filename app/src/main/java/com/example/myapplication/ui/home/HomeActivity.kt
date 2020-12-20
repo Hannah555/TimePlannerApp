@@ -4,13 +4,17 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -40,8 +44,11 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
     private lateinit var presenter: HomeContract.Presenter
     private lateinit var drawer: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
+    private lateinit var main_layout: ConstraintLayout
+    private lateinit var group: Group
     lateinit var googleSignInClient: GoogleSignInClient
     lateinit var logout: Button
+    lateinit var actionMenu: FloatingActionMenu
     lateinit var checklistFragment: ChecklistFragment
     lateinit var scheduleFragment: ScheduleFragment
     lateinit var homeFragment: HomeFragment
@@ -50,11 +57,14 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
+        val title: TextView = findViewById(R.id.title)
+        val swapbutton: Button = findViewById(R.id.swapbutton)
+        var swap: Int = 0
+
         val toolbar: Toolbar = findViewById(R.id.toolbar_main)
         setSupportActionBar(toolbar)
 
         drawer = findViewById(R.id.drawer_layout)
-
         toggle = ActionBarDrawerToggle(
             this,
             drawer,
@@ -63,6 +73,26 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
             R.string.navigation_drawer_close
         )
         drawer.addDrawerListener(toggle)
+        drawer.addDrawerListener(object: DrawerLayout.DrawerListener{
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                Log.i("state", slideOffset.toString())
+            }
+
+            override fun onDrawerOpened(drawerView: View) {
+                Log.i("fab", "clicked")
+                actionMenu.close(true)
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+                Log.i("state", "closed")
+            }
+
+            override fun onDrawerStateChanged(newState: Int) {
+                Log.i("state", newState.toString())
+            }
+
+        })
+        toggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
 
@@ -70,10 +100,36 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
         navigationView.setNavigationItemSelectedListener(this)
 
         // Implement the default fragment to home fragment
-        homeFragment = HomeFragment()
-        supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, homeFragment).setTransition(
+//        homeFragment = HomeFragment()
+//        supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, homeFragment).setTransition(
+//            FragmentTransaction.TRANSIT_FRAGMENT_OPEN
+//        ).commit()
+        checklistFragment = ChecklistFragment()
+        supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, checklistFragment).setTransition(
             FragmentTransaction.TRANSIT_FRAGMENT_OPEN
         ).commit()
+
+//        Swap Fragment
+        swapbutton.setOnClickListener {
+            if (swap == 0){
+                scheduleFragment = ScheduleFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, scheduleFragment).setTransition(
+                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN
+                ).commit()
+                title.text = "SCHEDULE"
+                swapbutton.text = "checklist"
+                swap = 1
+            }else{
+                checklistFragment = ChecklistFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, checklistFragment).setTransition(
+                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN
+                ).commit()
+                title.text = "CHECKLIST"
+                swapbutton.text = "schedule"
+                swap = 0
+            }
+        }
+
 
 
         // Set presenter
@@ -121,7 +177,7 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
 
         val actionView = findViewById<View>(R.id.floatingmenu)
 
-        val actionMenu = FloatingActionMenu.Builder(this)
+        actionMenu = FloatingActionMenu.Builder(this)
             .addSubActionView(addListButton)
             .addSubActionView(projectButton)
             .addSubActionView(homeButton)
@@ -130,11 +186,14 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
 
         addListButton.setOnClickListener {
             openAddListDialog()
+            actionMenu.close(true)
         }
 
         homeButton.setOnClickListener {
             toHomePage()
+            actionMenu.close(true)
         }
+
 
     }
 
@@ -220,4 +279,5 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
         }
 
     }
+
 }

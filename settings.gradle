@@ -1,2 +1,4 @@
 include ':app'
+include ':timetableview'
+project(':timetableview').projectDir = new File('C:\\Android Project Collection\\MyApplication\\timetableview')
 rootProject.name = "My Application"

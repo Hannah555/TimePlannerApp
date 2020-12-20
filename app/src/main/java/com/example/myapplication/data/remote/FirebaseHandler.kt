@@ -15,6 +15,8 @@ interface FirebaseHandler {
 
     fun getScheduleTask(retriever: ScheduleRetriever, date: String)
 
+    fun deleteScheduleTask(docID: String)
+
     interface FirebaseTunnel{
         fun onDataFetched(name: String, photo: Uri)
     }

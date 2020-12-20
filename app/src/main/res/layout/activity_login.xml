@@ -21,13 +21,14 @@
         android:id="@+id/loginbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/roundbutton"
+        android:background="@drawable/circle_shape"
         android:drawableLeft="@drawable/fui_ic_googleg_color_24dp"
         android:paddingLeft="30dp"
         android:paddingTop="10dp"
         android:paddingRight="30dp"
         android:paddingBottom="10dp"
         android:layout_marginTop="30dp"
+        android:backgroundTint="@null"
 
         android:text="Sign up with Google"
         android:textAllCaps="false"
@@ -39,6 +40,5 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logo" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

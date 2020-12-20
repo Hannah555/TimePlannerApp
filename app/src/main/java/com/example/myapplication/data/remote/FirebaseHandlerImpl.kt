@@ -120,6 +120,17 @@ class FirebaseHandlerImpl: FirebaseHandler {
         }
     }
 
+    override fun deleteScheduleTask(docID: String) {
+        val query = db.collection(FirebaseAuth.getInstance().currentUser!!.uid).document("profile")
+            .collection("task").document(docID)
+        query.delete()
+            .addOnSuccessListener {
+                Log.i("info", docID + " Deleted")
+            }
+            .addOnFailureListener{ e ->
+                Log.i("Error", e.toString())
+            }
 
+    }
 }
 

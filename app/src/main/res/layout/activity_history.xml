@@ -4,6 +4,97 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.history.HistoryActivity">
+    tools:context=".ui.history.HistoryActivity"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HISTORY"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <pl.hypeapp.materialtimelineview.MaterialTimelineView
+        android:id="@+id/material_timeline_view"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/holo_orange_light"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:timeline_bottom_radio_color="@android:color/white"
+        app:timeline_line_color="@android:color/black"
+        app:timeline_margin_start="32dp"
+        app:timeline_position="first"
+        app:timeline_radio_outline_radius="20"
+        app:timeline_radio_radius="12"
+        app:timeline_top_radio_color="@android:color/white"
+        app:timeline_type="item"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wash Clothes"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </pl.hypeapp.materialtimelineview.MaterialTimelineView>
+
+    <pl.hypeapp.materialtimelineview.MaterialTimelineView
+        android:id="@+id/material_timeline1"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/material_timeline_view"
+        app:timeline_bottom_radio_color="@android:color/white"
+        app:timeline_line_color="@android:color/black"
+        app:timeline_margin_start="32dp"
+        app:timeline_position="middle"
+        app:timeline_radio_outline_radius="20"
+        app:timeline_radio_radius="12"
+        app:timeline_top_radio_color="@android:color/white"
+        app:timeline_type="line">
+
+
+    </pl.hypeapp.materialtimelineview.MaterialTimelineView>
+
+    <pl.hypeapp.materialtimelineview.MaterialTimelineView
+        android:id="@+id/material_timeline"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/holo_orange_light"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/material_timeline1"
+        app:timeline_bottom_radio_color="@android:color/white"
+        app:timeline_line_color="@android:color/white"
+        app:timeline_margin_start="32dp"
+        app:timeline_position="last"
+        app:timeline_radio_outline_radius="20"
+        app:timeline_radio_radius="12"
+        app:timeline_top_radio_color="@android:color/white"
+        app:timeline_type="item">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Exercise"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </pl.hypeapp.materialtimelineview.MaterialTimelineView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
