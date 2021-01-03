@@ -22,6 +22,7 @@ import org.json.JSONObject
 import zion830.com.range_picker_dialog.TimeRangePickerDialog
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.regex.Pattern
 
 
 class AddListDialog : DialogFragment(), AddListContract.View{
@@ -36,6 +37,7 @@ class AddListDialog : DialogFragment(), AddListContract.View{
     private lateinit var showDate: TextView
     private lateinit var showTime: TextView
     private lateinit var editActivity: EditText
+    private lateinit var timeCheckbox: CheckBox
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -168,7 +170,7 @@ class AddListDialog : DialogFragment(), AddListContract.View{
         }
 
         // Checkbox Time activity
-        val timeCheckbox = dialogView.findViewById<CheckBox>(R.id.timeCheckbox)
+        timeCheckbox = dialogView.findViewById<CheckBox>(R.id.timeCheckbox)
         timeCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
             if(isChecked){
                 time_selection.visibility = View.VISIBLE
@@ -203,8 +205,8 @@ class AddListDialog : DialogFragment(), AddListContract.View{
             }
             else{
                 time_selection.visibility = View.GONE
-                startTime = null.toString()
-                endTime = null.toString()
+                startTime = null
+                endTime = null
             }
         }
 
@@ -227,7 +229,7 @@ class AddListDialog : DialogFragment(), AddListContract.View{
             dismiss()
         }
 
-        builder.setView(dialogView).setTitle("Add New Activity")
+        builder.setView(dialogView).setTitle("Add New Checklist/ Schedule...")
         return builder.create()
     }
 
@@ -240,6 +242,7 @@ class AddListDialog : DialogFragment(), AddListContract.View{
         }
     }
 
+//    Voice to Text
     private fun startRecord() {
         if(!SpeechRecognizer.isRecognitionAvailable(requireActivity())){
             Toast.makeText(
@@ -260,7 +263,7 @@ class AddListDialog : DialogFragment(), AddListContract.View{
     }
 
     override fun getJsonData(jsonData: String) {
-        Toast.makeText(requireActivity(), jsonData, Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireActivity(), jsonData, Toast.LENGTH_LONG).show()
         Log.i("json", jsonData)
         var weekday:String? = null
         var year: String? = null
@@ -276,6 +279,12 @@ class AddListDialog : DialogFragment(), AddListContract.View{
         val jsonArray = JSONArray(event)
         var i = 0
         var length = jsonArray.length()
+        Log.i("Length", jsonArray.length().toString())
+
+        if(length > 1){
+            Toast.makeText(this.context, "Sorry, only one event is allowed", Toast.LENGTH_SHORT).show()
+        }
+
         while (i < length){
             val jsonObject = jsonArray.getJSONObject(i)
             val startObject = jsonObject.getString("start")
@@ -294,7 +303,6 @@ class AddListDialog : DialogFragment(), AddListContract.View{
             length--
         }
 
-
         val date = day +"/" + month + "/" + year
         val inTimeString = hour + ":" + minute
 
@@ -310,9 +318,19 @@ class AddListDialog : DialogFragment(), AddListContract.View{
         addCal.time = parseTime
         addCal.add(Calendar.HOUR, 1)
 
+//        if number exist in body : put start time & end time
+        // check the time box
+//        if end time of json is null
         val endTime = OutTimeFormat.format(addCal.time)
-
         val resultTime = startTime + " - " + endTime
+
+//        if end time of json is not null : just take the end time
+
+
+        // if checklist: time_in_text
+        // else (with time)
+        // every day, tomorrow, week, today, custom
+
 
         Log.i("TIme!!!!!!!!", resultTime)
         showTime.text = resultTime
@@ -322,5 +340,10 @@ class AddListDialog : DialogFragment(), AddListContract.View{
 
     override fun setPresenter(presenter: AddListContract.Presenter) {
         this.presenter = presenter
+    }
+
+    fun checkPattern(text: String){
+        val am_pattern = Pattern.compile("am")
+        val pm_pattern = Pattern.compile("pm")
     }
 }

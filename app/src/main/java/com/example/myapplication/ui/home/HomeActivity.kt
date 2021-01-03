@@ -13,8 +13,6 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -25,7 +23,7 @@ import com.example.myapplication.R
 import com.example.myapplication.data.remote.FirebaseHandlerImpl
 import com.example.myapplication.ui.addList.AddListDialog
 import com.example.myapplication.ui.checklist.ChecklistFragment
-import com.example.myapplication.ui.history.HistoryActivity
+import com.example.myapplication.ui.history.HistoryFragment
 import com.example.myapplication.ui.login.LoginActivity
 import com.example.myapplication.ui.schedule.ScheduleFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -44,21 +42,21 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
     private lateinit var presenter: HomeContract.Presenter
     private lateinit var drawer: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
-    private lateinit var main_layout: ConstraintLayout
-    private lateinit var group: Group
     lateinit var googleSignInClient: GoogleSignInClient
     lateinit var logout: Button
     lateinit var actionMenu: FloatingActionMenu
     lateinit var checklistFragment: ChecklistFragment
     lateinit var scheduleFragment: ScheduleFragment
-    lateinit var homeFragment: HomeFragment
+    lateinit var historyFragment: HistoryFragment
+    lateinit var title: TextView
+    lateinit var swapbutton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        val title: TextView = findViewById(R.id.title)
-        val swapbutton: Button = findViewById(R.id.swapbutton)
+        title= findViewById(R.id.title)
+        swapbutton = findViewById(R.id.swapbutton)
         var swap: Int = 0
 
         val toolbar: Toolbar = findViewById(R.id.toolbar_main)
@@ -100,14 +98,11 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
         navigationView.setNavigationItemSelectedListener(this)
 
         // Implement the default fragment to home fragment
-//        homeFragment = HomeFragment()
-//        supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, homeFragment).setTransition(
-//            FragmentTransaction.TRANSIT_FRAGMENT_OPEN
-//        ).commit()
         checklistFragment = ChecklistFragment()
         supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, checklistFragment).setTransition(
             FragmentTransaction.TRANSIT_FRAGMENT_OPEN
         ).commit()
+        title.text = "Checklist"
 
 //        Swap Fragment
         swapbutton.setOnClickListener {
@@ -116,7 +111,7 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
                 supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, scheduleFragment).setTransition(
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN
                 ).commit()
-                title.text = "SCHEDULE"
+                title.text = "Schedule"
                 swapbutton.text = "checklist"
                 swap = 1
             }else{
@@ -124,7 +119,7 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
                 supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, checklistFragment).setTransition(
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN
                 ).commit()
-                title.text = "CHECKLIST"
+                title.text = "Checklist"
                 swapbutton.text = "schedule"
                 swap = 0
             }
@@ -254,17 +249,17 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.nav_item_one -> {
-                homeFragment = HomeFragment()
-                supportFragmentManager.beginTransaction().replace(
-                    R.id.nav_host_fragment,
-                    homeFragment
-                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit()
-            }
-            R.id.nav_item_two -> {
-                val intent = Intent(this, HistoryActivity::class.java)
-                //intent.putExtra("key Identifier", value)
+                val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
                 finish()
+            }
+            R.id.nav_item_two -> {
+                historyFragment = HistoryFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, historyFragment).setTransition(
+                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN
+                ).commit()
+                title.text = "History"
+                swapbutton.visibility = View.GONE
             }
         }
         drawer_layout.closeDrawer(GravityCompat.START)

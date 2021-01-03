@@ -1,10 +1,12 @@
 package com.example.myapplication.ui.schedule
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.myapplication.R
 import com.example.myapplication.data.remote.FirebaseHandlerImpl
@@ -63,24 +65,24 @@ class ScheduleFragment() : Fragment(), ScheduleContract.View, DatePickerListener
         val formattedDate: String = df.format(c)
         presenter.scheduleHandler(formattedDate)
 
-//        timetable.setOnStickerSelectEventListener { idx, schedules ->
-//            Log.i("idx", idx.toString())
-//            Log.i("dociD", documentIDList.get(idx))
-//            val builder  = AlertDialog.Builder(this.context)
-//            builder.setTitle("Are you sure to delete?")
-//            builder.setPositiveButton(android.R.string.yes){ dialog, which ->
-//                timetable.remove(idx)
-//                presenter.passDocumentID(documentIDList.get(idx))
-//                Toast.makeText(this.context, "Successfully deleted" + documentIDList.get(idx), Toast.LENGTH_SHORT).show()
-//                //presenter.scheduleHandler(thisdate)
-//            }
-//            builder.setNegativeButton(android.R.string.no){ dialog, which ->
-//                Toast.makeText(this.context, "Cancelled", Toast.LENGTH_SHORT).show()
-//            }
-//            builder.show()
-//
-//            Log.i("doclist", documentIDList.toString())
-//        }
+        timetable.setOnStickerSelectEventListener { idx, schedules ->
+            Log.i("idx", idx.toString())
+            Log.i("dociD", documentIDList.get(idx))
+            val builder  = AlertDialog.Builder(this.context)
+            builder.setTitle("Are you sure to delete?")
+            builder.setPositiveButton(android.R.string.yes){ dialog, which ->
+                timetable.remove(idx)
+                presenter.passDocumentID(documentIDList.get(idx))
+                Toast.makeText(this.context, "Successfully deleted" + documentIDList.get(idx), Toast.LENGTH_SHORT).show()
+                //presenter.scheduleHandler(thisdate)
+            }
+            builder.setNegativeButton(android.R.string.no){ dialog, which ->
+                Toast.makeText(this.context, "Cancelled", Toast.LENGTH_SHORT).show()
+            }
+            builder.show()
+
+            Log.i("doclist", documentIDList.toString())
+        }
         return v
     }
 

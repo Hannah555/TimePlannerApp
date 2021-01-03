@@ -20,10 +20,8 @@ class SchedulePresenter(view: ScheduleContract.View, firebaseHandler: FirebaseHa
         var list: ArrayList<Schedule>? = null
         val documentIDList: ArrayList<String>? = ArrayList()
         Log.i("schedule presenter date", date)
-        Log.i("SEQUENCE", "3")
         firebaseHandler.getScheduleTask(object : FirebaseHandler.ScheduleRetriever{
             override fun onDateFetched(querySnapshot: QuerySnapshot?, date: String) {
-                Log.i("SEQUENCE", "4")
                 if (querySnapshot != null) {
                     for (document in querySnapshot) {
                         val task = document.toObject(Task::class.java)
@@ -33,7 +31,7 @@ class SchedulePresenter(view: ScheduleContract.View, firebaseHandler: FirebaseHa
 //                        Log.i("done info", currentDocument.done.toString())
 //                        Log.i("startTime info", currentDocument.startTime.toString())
 //                        Log.i("endTime info", currentDocument.endTime.toString())
-                        if(task.date == date){
+                        if(task.date == date || task.date == "everyday"){
                             val startTime = task.startTime
                             val endTime = task.endTime
                             val title = task.task
@@ -41,29 +39,26 @@ class SchedulePresenter(view: ScheduleContract.View, firebaseHandler: FirebaseHa
                             val startPart = startTime?.split(" ", ":")
                             val endPart = endTime?.split(" ", ":")
 
-                            // For start hour
-                            if(startPart?.get(0) == "pm" && startHour!! >= 1 && startHour!! <= 11){
-                                startHour = startPart.get(1).toInt() + 12
-                                if(startHour!! == 24){
-                                    startHour = 0
-                                }
+                            // For end hour
+                            endHour = if(endPart?.get(0) == "pm"  && endHour!! >= 1 && endHour!! <= 11){
+                                Log.i("test", "run time")
+                                endPart.get(1).toInt() + 12
                             }else{
-                                startHour = startPart?.get(1)?.toInt()
+                                endPart?.get(1)?.toInt()
+                            }
+
+                            startHour = startPart?.get(1)?.toInt()
+                            if(startPart?.get(0) == "pm" && startHour!! < 12){
+                                startHour = startPart?.get(1)?.toInt() + 12
                             }
 
                             startMinute = startPart?.get(2)?.toInt()
 
-                            // For end hour
-                            if(endPart?.get(0) == "pm"  && startHour!! >= 1 && startHour!! <= 11){
-                                endHour = endPart.get(1).toInt() + 12
-                                if(endHour!! == 24){
-                                    endHour = 0
-                                }
-                            }else{
-                                endHour = endPart?.get(1)?.toInt()
-                            }
-
                             endMinute = endPart?.get(2)?.toInt()
+
+                            Log.i("start part", startPart?.get(0).toString())
+                            Log.i("end part", endPart?.get(0).toString())
+                            Log.i("start hour", startHour.toString())
 
                             list = view.showSchedule(title, startHour, startMinute, endHour, endMinute)
                             documentIDList!!.add(document.id)
@@ -73,7 +68,6 @@ class SchedulePresenter(view: ScheduleContract.View, firebaseHandler: FirebaseHa
                 }
             }
         }, date)
-        Log.i("schedule in presenter", list.toString())
         return list
     }
 

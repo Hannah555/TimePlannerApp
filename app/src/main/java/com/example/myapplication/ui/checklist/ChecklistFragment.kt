@@ -35,9 +35,13 @@ class ChecklistFragment() : Fragment(), DatePickerListener {
 
     protected lateinit var rootview: View
     lateinit var recyclerView: RecyclerView
+    lateinit var sRecyclerView: RecyclerView
+    lateinit var sdatabase: FirebaseFirestore
     lateinit var mdatabase: FirebaseFirestore
     private var adapter: RecyclerViewAdapter? = null
+    private var sadapter: RecyclerViewAdapter? = null
     private lateinit var tquery:Query
+    private lateinit var query: Query
 //    private lateinit var scheduleFragment: ScheduleFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -122,14 +126,69 @@ class ChecklistFragment() : Fragment(), DatePickerListener {
         adapter!!.startListening()
     }
 
+    private fun scheduleRecycleView(date:String){
+        sRecyclerView = rootview.findViewById(R.id.schedulerecyclerview)
+        sRecyclerView.layoutManager = LinearLayoutManager(context)
+        sdatabase = FirebaseFirestore.getInstance()
+        query = sdatabase.collection(FirebaseAuth.getInstance().currentUser!!.uid).document("profile").collection(
+            "task"
+        )
+            .whereNotEqualTo("startTime", null)
+            .whereEqualTo("date", date)
+        val options= FirestoreRecyclerOptions.Builder<Task>()
+            .setQuery(query, Task::class.java)
+            .build()
+        sadapter = RecyclerViewAdapter(options)
+        sRecyclerView.adapter = sadapter
+
+        val mIth = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            0, ItemTouchHelper.LEFT.or(
+                ItemTouchHelper.RIGHT
+            )
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                sadapter?.deleteItem(viewHolder.adapterPosition)
+                Toast.makeText(requireActivity(), "Task deleted", Toast.LENGTH_SHORT).show()
+            }
+
+        }).attachToRecyclerView(sRecyclerView)
+
+        sadapter?.setOnItemClickListener(object : OnItemClickListener {
+            override fun onItemClick(
+                documentSnapshot: DocumentSnapshot,
+                position: Int,
+                isDone: Boolean
+            ) {
+                val taskid: String = documentSnapshot.id
+                Log.i("------", "------------------")
+                Log.i("Position", position.toString())
+                Log.i("Path", documentSnapshot.reference.path)
+                Log.i("Snapshot done", documentSnapshot.get("done").toString())
+                Log.i("isDone", isDone.toString())
+                documentSnapshot.reference.update("done", !isDone)
+            }
+        })
+        sadapter!!.startListening()
+    }
+
     override fun onStart() {
         super.onStart()
         adapter!!.startListening()
+        sadapter!!.startListening()
     }
 
     override fun onStop() {
         super.onStop()
         adapter!!.stopListening()
+        sadapter!!.stopListening()
     }
 
     fun initView() {
@@ -138,6 +197,7 @@ class ChecklistFragment() : Fragment(), DatePickerListener {
         val df = SimpleDateFormat("dd/MMM/yyyy", Locale.getDefault())
         val formattedDate: String = df.format(c)
         initializerRecyclerView(formattedDate)
+        scheduleRecycleView(formattedDate)
     }
 
     override fun onDateSelected(dateSelected: DateTime?) {
@@ -147,6 +207,7 @@ class ChecklistFragment() : Fragment(), DatePickerListener {
         val date = separate2?.get(2) + "/" + separate2?.get(1) + "/" + separate2?.get(0)
         Log.i("date", date)
         initializerRecyclerView(date)
+        scheduleRecycleView(date)
     }
 
 }

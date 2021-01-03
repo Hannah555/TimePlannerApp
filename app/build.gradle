@@ -83,7 +83,7 @@ dependencies {
 //    implementation 'com.github.tlaabs:TimetableView:1.0.3-fx1'
 
 //    Timeline view
-    implementation 'pl.hypeapp:materialtimelineview:1.1'
+    implementation 'com.github.vipulasri:timelineview:1.1.5'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.1'

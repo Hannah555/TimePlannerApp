@@ -8,6 +8,7 @@ import com.example.myapplication.data.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.util.*
 
 class FirebaseHandlerImpl: FirebaseHandler {
 
@@ -59,7 +60,7 @@ class FirebaseHandlerImpl: FirebaseHandler {
     override fun saveTask(task: Task) {
 
         db.collection(FirebaseAuth.getInstance().currentUser!!.uid).document("profile").collection("task")
-            .document().set(task)
+            .document(Date().toString()).set(task)
             .addOnCompleteListener {dbTask->
                 if(dbTask.isSuccessful)
                     Log.i("DB TAS", "Suceces")
@@ -91,12 +92,13 @@ class FirebaseHandlerImpl: FirebaseHandler {
 
     override fun getScheduleTask(retriever: FirebaseHandler.ScheduleRetriever, date: String) {
         val query = db.collection(FirebaseAuth.getInstance().currentUser!!.uid).document("profile").collection("task")
-            .whereNotEqualTo("startTime", null)
+        .whereNotEqualTo("startTime", null)
+//        .whereEqualTo("date", "everyday").whereNotEqualTo("startTime", null)
 
         query.get().addOnCompleteListener { task->
             if(task.isSuccessful){
 //                val result = task.result
-                retriever.onDateFetched(task.result, date)
+                    retriever.onDateFetched(task.result, date)
 
 
 
