@@ -6,6 +6,7 @@ import com.example.myapplication.data.model.Task
 import com.example.myapplication.data.remote.FirebaseHandler
 import com.github.tlaabs.timetableview.Schedule
 import com.google.firebase.firestore.QuerySnapshot
+import java.text.SimpleDateFormat
 
 class SchedulePresenter(view: ScheduleContract.View, firebaseHandler: FirebaseHandler): ScheduleContract.Presenter {
 
@@ -19,9 +20,16 @@ class SchedulePresenter(view: ScheduleContract.View, firebaseHandler: FirebaseHa
     override fun scheduleHandler(date: String): ArrayList<Schedule>? {
         var list: ArrayList<Schedule>? = null
         val documentIDList: ArrayList<String>? = ArrayList()
-        Log.i("schedule presenter date", date)
+//        Log.i("schedule presenter date", date)
         firebaseHandler.getScheduleTask(object : FirebaseHandler.ScheduleRetriever{
             override fun onDateFetched(querySnapshot: QuerySnapshot?, date: String) {
+
+                Log.i("onFetch", date)
+                val format = SimpleDateFormat("dd/MM/yyyy")
+                val sdf = format.parse(date)
+                val weekFormat = SimpleDateFormat("EEEE")
+                val week = weekFormat.format(sdf)
+
                 if (querySnapshot != null) {
                     for (document in querySnapshot) {
                         val task = document.toObject(Task::class.java)
@@ -31,7 +39,7 @@ class SchedulePresenter(view: ScheduleContract.View, firebaseHandler: FirebaseHa
 //                        Log.i("done info", currentDocument.done.toString())
 //                        Log.i("startTime info", currentDocument.startTime.toString())
 //                        Log.i("endTime info", currentDocument.endTime.toString())
-                        if(task.date == date || task.date == "everyday"){
+                        if(task.date == date || task.date == "everyday" || task.date == week){
                             val startTime = task.startTime
                             val endTime = task.endTime
                             val title = task.task

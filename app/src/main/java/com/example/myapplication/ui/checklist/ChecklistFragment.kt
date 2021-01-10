@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
+import com.example.myapplication.data.model.History
 import com.example.myapplication.data.model.Task
+import com.example.myapplication.data.remote.FirebaseHandlerImpl
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.github.jhonnyx2012.horizontalpicker.DatePickerListener
 import com.github.jhonnyx2012.horizontalpicker.HorizontalPicker
@@ -31,8 +33,9 @@ import java.util.*
  * Use the [ChecklistFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ChecklistFragment() : Fragment(), DatePickerListener {
+class ChecklistFragment() : Fragment(), DatePickerListener, ChecklistContract.View {
 
+    private lateinit var presenter: ChecklistContract.Presenter
     protected lateinit var rootview: View
     lateinit var recyclerView: RecyclerView
     lateinit var sRecyclerView: RecyclerView
@@ -58,22 +61,24 @@ class ChecklistFragment() : Fragment(), DatePickerListener {
         rootview = inflater.inflate(R.layout.fragment_checklist, container, false)
         val picker: HorizontalPicker = rootview.findViewById(R.id.datePicker)
 
+        setPresenter(ChecklistPresenter(this, FirebaseHandlerImpl()))
+
         picker.setListener(this).init()
         picker.setDate(DateTime())
+        picker.offset = 12
 
-//        to_scheduleButton.setOnClickListener {
-//            scheduleFragment = ScheduleFragment()
-//            supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, checklistFragment).setTransition(
-//                FragmentTransaction.TRANSIT_FRAGMENT_OPEN
-//            ).commit()
-//        }
 
         initView()
         return rootview
     }
 
     private fun initializerRecyclerView(thisdate:String) {
-        Log.i("date in recyclerview", thisdate)
+
+        val format = SimpleDateFormat("dd/MM/yyyy")
+        val sdf = format.parse(thisdate)
+        val weekFormat = SimpleDateFormat("EEEE")
+        val week = weekFormat.format(sdf)
+
         recyclerView = rootview.findViewById(R.id.recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(context)
         mdatabase = FirebaseFirestore.getInstance()
@@ -81,12 +86,13 @@ class ChecklistFragment() : Fragment(), DatePickerListener {
             "task"
         )
             .whereEqualTo("startTime", null)
-            .whereEqualTo("date", thisdate)
+            .whereIn("date", Arrays.asList("everyday", thisdate, week))
         val options= FirestoreRecyclerOptions.Builder<Task>()
             .setQuery(tquery, Task::class.java)
             .build()
         adapter = RecyclerViewAdapter(options)
         recyclerView.adapter = adapter
+
 
         val mIth = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
             0, ItemTouchHelper.LEFT.or(
@@ -121,20 +127,25 @@ class ChecklistFragment() : Fragment(), DatePickerListener {
                 Log.i("Snapshot done", documentSnapshot.get("done").toString())
                 Log.i("isDone", isDone.toString())
                 documentSnapshot.reference.update("done", !isDone)
+
             }
         })
         adapter!!.startListening()
     }
 
     private fun scheduleRecycleView(date:String){
+
+        val format = SimpleDateFormat("dd/MM/yyyy")
+        val sdf = format.parse(date)
+        val weekFormat = SimpleDateFormat("EEEE")
+        val week = weekFormat.format(sdf)
+
         sRecyclerView = rootview.findViewById(R.id.schedulerecyclerview)
         sRecyclerView.layoutManager = LinearLayoutManager(context)
         sdatabase = FirebaseFirestore.getInstance()
-        query = sdatabase.collection(FirebaseAuth.getInstance().currentUser!!.uid).document("profile").collection(
-            "task"
-        )
+        query = sdatabase.collection(FirebaseAuth.getInstance().currentUser!!.uid).document("profile").collection("task")
             .whereNotEqualTo("startTime", null)
-            .whereEqualTo("date", date)
+            .whereIn("date", Arrays.asList("everyday", date, week))
         val options= FirestoreRecyclerOptions.Builder<Task>()
             .setQuery(query, Task::class.java)
             .build()
@@ -174,6 +185,9 @@ class ChecklistFragment() : Fragment(), DatePickerListener {
                 Log.i("Snapshot done", documentSnapshot.get("done").toString())
                 Log.i("isDone", isDone.toString())
                 documentSnapshot.reference.update("done", !isDone)
+                val title = documentSnapshot.get("task").toString()
+                val time = documentSnapshot.get("startTime").toString()
+                addDoneTask(History(title,date,time))
             }
         })
         sadapter!!.startListening()
@@ -194,8 +208,9 @@ class ChecklistFragment() : Fragment(), DatePickerListener {
     fun initView() {
         val c: Date = Calendar.getInstance().getTime()
 
-        val df = SimpleDateFormat("dd/MMM/yyyy", Locale.getDefault())
+        val df = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val formattedDate: String = df.format(c)
+        Log.i("Fomatted date", formattedDate)
         initializerRecyclerView(formattedDate)
         scheduleRecycleView(formattedDate)
     }
@@ -208,6 +223,16 @@ class ChecklistFragment() : Fragment(), DatePickerListener {
         Log.i("date", date)
         initializerRecyclerView(date)
         scheduleRecycleView(date)
+    }
+
+    override fun addDoneTask(history: History) {
+        Log.i("date", history.time)
+        presenter.handleDoneTask(history)
+    }
+
+
+    override fun setPresenter(presenter: ChecklistContract.Presenter) {
+        this.presenter = presenter
     }
 
 }

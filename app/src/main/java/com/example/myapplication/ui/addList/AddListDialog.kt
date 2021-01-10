@@ -22,7 +22,6 @@ import org.json.JSONObject
 import zion830.com.range_picker_dialog.TimeRangePickerDialog
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.regex.Pattern
 
 
 class AddListDialog : DialogFragment(), AddListContract.View{
@@ -227,6 +226,7 @@ class AddListDialog : DialogFragment(), AddListContract.View{
             task = editActivity.text.toString()
             presenter.handleActivitySuccess(Task(task, date, repeat, startTime, endTime))
             dismiss()
+            Toast.makeText(context, "$task Created Successfully", Toast.LENGTH_SHORT).show()
         }
 
         builder.setView(dialogView).setTitle("Add New Checklist/ Schedule...")
@@ -340,10 +340,5 @@ class AddListDialog : DialogFragment(), AddListContract.View{
 
     override fun setPresenter(presenter: AddListContract.Presenter) {
         this.presenter = presenter
-    }
-
-    fun checkPattern(text: String){
-        val am_pattern = Pattern.compile("am")
-        val pm_pattern = Pattern.compile("pm")
     }
 }

@@ -3,6 +3,7 @@ package com.example.myapplication.data.remote
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.util.Log
+import com.example.myapplication.data.model.History
 import com.example.myapplication.data.model.Task
 import com.example.myapplication.data.model.User
 import com.google.firebase.auth.FirebaseAuth
@@ -100,24 +101,6 @@ class FirebaseHandlerImpl: FirebaseHandler {
 //                val result = task.result
                     retriever.onDateFetched(task.result, date)
 
-
-
-//                    if (result != null) {
-//                        for (document in result) {
-//                            val currentDocument = document.toObject(Task::class.java)
-//                            Log.i("task info", currentDocument.task.toString())
-//                            Log.i("date info", currentDocument.date.toString())
-//                            Log.i("repeat info", currentDocument.repeat.toString())
-//                            Log.i("done info", currentDocument.done.toString())
-//                            Log.i("startTime info", currentDocument.startTime.toString())
-//                            Log.i("endTime info", currentDocument.endTime.toString())
-//                            if(currentDocument.date == date){
-//                                retriever.onDateFetched(currentDocument)
-//
-//                            }
-//                        }
-//                    }
-
             }
         }
     }
@@ -132,6 +115,43 @@ class FirebaseHandlerImpl: FirebaseHandler {
             .addOnFailureListener{ e ->
                 Log.i("Error", e.toString())
             }
+
+    }
+
+    override fun getGraphData(retriever: FirebaseHandler.GraphDataRetriever) {
+        val query = db.collection(FirebaseAuth.getInstance().currentUser!!.uid).document("profile")
+            .collection("history")
+
+        query.get().addOnCompleteListener { history ->
+            if (history.isSuccessful){
+                retriever.onDataFetched(history.result)
+            }
+        }
+    }
+
+    override fun saveHistoryData(history: History) {
+        db.collection(FirebaseAuth.getInstance().currentUser!!.uid).document("profile").collection("history")
+            .document(Date().toString()).set(history)
+            .addOnCompleteListener {dbTask->
+                if(dbTask.isSuccessful)
+                    Log.i("DB TAS", "Suceces")
+                else
+                    Log.i("DB TAS", "Failed")
+            }
+    }
+
+    override fun getHistoryData(retriever: FirebaseHandler.HistoryRetriever, history: History) {
+        val query = db.collection(FirebaseAuth.getInstance().currentUser!!.uid).document("profile")
+            .collection("history")
+
+        query.get().addOnCompleteListener { task ->
+            if (task.isSuccessful){
+                retriever.onDataFetched(task.result)
+            }
+        }
+    }
+
+    override fun deleteHistory(docID: String) {
 
     }
 }

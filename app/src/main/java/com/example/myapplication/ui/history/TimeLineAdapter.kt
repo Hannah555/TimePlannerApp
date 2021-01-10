@@ -37,14 +37,14 @@ class TimeLineAdapter(private val mFeedList: List<History>) : RecyclerView.Adapt
     override fun onBindViewHolder(holder: TimeLineViewHolder, position: Int) {
         val timeLineModel = mFeedList[position]
 
-        if(timeLineModel.date.isNotEmpty()){
+        if(timeLineModel.date!!.isNotEmpty()){
             holder.date.visibility = View.VISIBLE
             holder.date.text = timeLineModel.date
         } else{
             holder.date.visibility = View.GONE
         }
 
-        holder.title.text = timeLineModel.message
+        holder.title.text = timeLineModel.title + " " + timeLineModel.time
     }
 
 

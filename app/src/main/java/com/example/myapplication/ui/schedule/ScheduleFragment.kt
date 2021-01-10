@@ -61,7 +61,7 @@ class ScheduleFragment() : Fragment(), ScheduleContract.View, DatePickerListener
 
         val c: Date = Calendar.getInstance().getTime()
 
-        val df = SimpleDateFormat("dd/MMM/yyyy", Locale.getDefault())
+        val df = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val formattedDate: String = df.format(c)
         presenter.scheduleHandler(formattedDate)
 
@@ -74,7 +74,7 @@ class ScheduleFragment() : Fragment(), ScheduleContract.View, DatePickerListener
                 timetable.remove(idx)
                 presenter.passDocumentID(documentIDList.get(idx))
                 Toast.makeText(this.context, "Successfully deleted" + documentIDList.get(idx), Toast.LENGTH_SHORT).show()
-                //presenter.scheduleHandler(thisdate)
+
             }
             builder.setNegativeButton(android.R.string.no){ dialog, which ->
                 Toast.makeText(this.context, "Cancelled", Toast.LENGTH_SHORT).show()

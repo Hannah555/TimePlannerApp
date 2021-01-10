@@ -22,6 +22,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.myapplication.R
 import com.example.myapplication.data.remote.FirebaseHandlerImpl
 import com.example.myapplication.ui.addList.AddListDialog
+import com.example.myapplication.ui.analysis.AnalysisFragment
 import com.example.myapplication.ui.checklist.ChecklistFragment
 import com.example.myapplication.ui.history.HistoryFragment
 import com.example.myapplication.ui.login.LoginActivity
@@ -48,6 +49,7 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
     lateinit var checklistFragment: ChecklistFragment
     lateinit var scheduleFragment: ScheduleFragment
     lateinit var historyFragment: HistoryFragment
+    lateinit var analysisFragment: AnalysisFragment
     lateinit var title: TextView
     lateinit var swapbutton: Button
 
@@ -124,8 +126,6 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
                 swap = 0
             }
         }
-
-
 
         // Set presenter
         setPresenter(HomePresenter(this, FirebaseHandlerImpl()))
@@ -259,6 +259,14 @@ class HomeActivity : AppCompatActivity(), HomeContract.View, NavigationView.OnNa
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN
                 ).commit()
                 title.text = "History"
+                swapbutton.visibility = View.GONE
+            }
+            R.id.nav_item_three -> {
+                analysisFragment = AnalysisFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, analysisFragment).setTransition(
+                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN
+                ).commit()
+                title.text = "Analysis"
                 swapbutton.visibility = View.GONE
             }
         }

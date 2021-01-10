@@ -13,22 +13,23 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 
 
-
 class RecyclerViewAdapter constructor(options: FirestoreRecyclerOptions<Task>) : FirestoreRecyclerAdapter<Task, RecyclerViewAdapter.TaskViewHolder>(options) {
-
 
     private lateinit var listener: OnItemClickListener
 
     override fun onBindViewHolder(tasktViewHolder: TaskViewHolder, position: Int, task: Task) {
         //Log.i("ONBIND", position.toString())
 
+
         tasktViewHolder.textView.text = task.task
         val document = snapshots.getSnapshot(position)
         var isDone = document.getBoolean("done")
+
         if(isDone!!)
             tasktViewHolder.statusButton.setImageResource(R.drawable.ic_baseline_check_circle_24)
         else
             tasktViewHolder.statusButton.setImageResource(R.drawable.ic_baseline_check_circle_outline_24)
+
         tasktViewHolder.statusButton.setOnClickListener {
             Log.i("status button", isDone.toString())
             listener.onItemClick(document, position, isDone)
@@ -54,6 +55,7 @@ class RecyclerViewAdapter constructor(options: FirestoreRecyclerOptions<Task>) :
     fun setOnItemClickListener(listener: OnItemClickListener){
         this.listener = listener
     }
+
 }
 
 
